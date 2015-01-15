@@ -1,0 +1,937 @@
+# Copyright (c) 2014 Nokia Solutions and Networks Oy Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and limitations under the License.
+
+##### Primary configuration settings #####
+##########################################
+# This configuration file is used to manage the behavior of the Salt Master
+# Values that are commented out but have no space after the comment are
+# defaults that need not be set in the config. If there is a space after the
+# comment that the value is presented as an example and is not the default.
+
+# Per default, the master will automatically include all config files
+# from master.d/*.conf (master.d is a directory in the same directory
+# as the main master config file)
+#default_include: master.d/*.conf
+<% if master['default_include'] -%>
+default_include: <%= master['default_include'] %>
+<% end -%>
+
+# The address of the interface to bind to
+#interface: 0.0.0.0
+<% if master['interface'] -%>
+interface: <%= master['interface'] %>
+<% end -%>
+
+# Whether the master should listen for IPv6 connections. If this is set to True,
+# the interface option must be adjusted too (for example: "interface: '::'")
+#ipv6: False
+<% if master['ipv6'] -%>
+ipv6: <%= master['ipv6'] %>
+<% end -%>
+
+# The tcp port used by the publisher
+#publish_port: 4505
+<% if master['publish_port'] -%>
+publish_port: <%= master['publish_port'] %>
+<% end -%>
+
+# The user to run the salt-master as. Salt will update all permissions to
+# allow the specified user to run the master. If the modified files cause
+# conflicts set verify_env to False.
+#user: root
+<% if master['user'] -%>
+user: <%= master['user'] %>
+<% end -%>
+
+# Max open files
+# Each minion connecting to the master uses AT LEAST one file descriptor, the
+# master subscription connection. If enough minions connect you might start
+# seeing on the console(and then salt-master crashes):
+#   Too many open files (tcp_listener.cpp:335)
+#   Aborted (core dumped)
+#
+# By default this value will be the one of `ulimit -Hn`, ie, the hard limit for
+# max open files.
+#
+# If you wish to set a different value than the default one, uncomment and
+# configure this setting. Remember that this value CANNOT be higher than the
+# hard limit. Raising the hard limit depends on your OS and/or distribution,
+# a good way to find the limit is to search the internet for(for example):
+#   raise max open files hard limit debian
+#
+#max_open_files: 100000
+<% if master['max_open_files'] -%>
+max_open_files: <%= master['max_open_files'] %>
+<% else -%>
+max_open_files: 100000
+<% end -%>
+
+# The number of worker threads to start, these threads are used to manage
+# return calls made from minions to the master, if the master seems to be
+# running slowly, increase the number of threads
+#worker_threads: 5
+<% if master['worker_threads'] -%>
+worker_threads: <%= master['worker_threads'] %>
+<% else -%>
+worker_threads: 10
+<% end -%>
+
+# The port used by the communication interface. The ret (return) port is the
+# interface used for the file server, authentication, job returnes, etc.
+#ret_port: 4506
+<% if master['ret_port'] -%>
+ret_port: <%= master['ret_port'] %>
+<% end -%>
+
+# Specify the location of the daemon process ID file
+#pidfile: /var/run/salt-master.pid
+<% if master['pidfile'] -%>
+pidfile: <%= master['pidfile'] %>
+<% end -%>
+
+# The root directory prepended to these options: pki_dir, cachedir,
+# sock_dir, log_file, autosign_file, extension_modules, key_logfile, pidfile.
+#root_dir: /
+<% if master['root_dir'] -%>
+root_dir: <%= master['root_dir'] %>
+<% end -%>
+
+# Directory used to store public key data
+#pki_dir: /etc/salt/pki/master
+<% if master['pki_dir'] -%>
+pki_dir: <%= master['pki_dir'] %>
+<% end -%>
+
+# Directory to store job and cache data
+#cachedir: /var/cache/salt/master
+<% if master['cachedir'] -%>
+cachedir: <%= master['cachedir'] %>
+<% end -%>
+
+# Directory for custom modules. This directory can contain subdirectories for
+# each of Salt's module types such as "runners", "output", "wheel", "modules",
+# "states", "returners", etc.
+#extension_modules: <no default>
+
+# Verify and set permissions on configuration directories at startup
+#verify_env: True
+<% if master['verify_env'] -%>
+verify_env: <%= master['verify_env'] %>
+<% end -%>
+
+# Set the number of hours to keep old job information in the job cache
+#keep_jobs: 24
+<% if master['keep_jobs'] -%>
+keep_jobs: <%= master['keep_jobs'] %>
+<% end -%>
+
+# Set the default timeout for the salt command and api, the default is 5
+# seconds
+#timeout: 5
+<% if master['timeout'] -%>
+timeout: <%= master['timeout'] %>
+<% else -%>
+timeout: 10
+<% end -%>
+
+# The loop_interval option controls the seconds for the master's maintinance
+# process check cycle. This process updates file server backends, cleans the
+# job cache and executes the scheduler.
+#loop_interval: 60
+<% if master['loop_interval'] -%>
+loop_interval: <%= master['loop_interval'] %>
+<% end -%>
+
+# Set the default outputter used by the salt command. The default is "nested"
+#output: nested
+<% if master['output'] -%>
+output: <%= master['output'] %>
+<% end -%>
+
+# Return minions that timeout when running commands like test.ping
+#show_timeout: True
+
+# By default output is colored, to disable colored output set the color value
+# to False
+#color: True
+<% if master['color'] -%>
+color: <%= master['color'] %>
+<% end -%>
+
+# Do not strip off the colored output from nested results and states outputs
+# (true by default)
+# strip_colors: false
+
+# Set the directory used to hold unix sockets
+#sock_dir: /var/run/salt/master
+<% if master['sock_dir'] -%>
+sock_dir: <%= master['sock_dir'] %>
+<% end -%>
+
+# The master can take a while to start up when lspci and/or dmidecode is used
+# to populate the grains for the master. Enable if you want to see GPU hardware
+# data for your master.
+#
+# enable_gpu_grains: False
+
+# The master maintains a job cache, while this is a great addition it can be
+# a burden on the master for larger deployments (over 5000 minions).
+# Disabling the job cache will make previously executed jobs unavailable to
+# the jobs system and is not generally recommended.
+#
+#job_cache: True
+<% if master['job_cache'] -%>
+job_cache: <%= master['job_cache'] %>
+<% end -%>
+
+# Cache minion grains and pillar data in the cachedir.
+#minion_data_cache: True
+<% if master['minion_data_cache'] -%>
+minion_data_cache: <%= master['minion_data_cache'] %>
+<% end -%>
+
+# Passing very large events can cause the minion to consume large amounts of
+# memory. This value tunes the maximum size of a message allowed onto the
+# master event bus. The value is expressed in bytes.
+max_event_size: 10048576
+
+# The master can include configuration from other files. To enable this,
+# pass a list of paths to this option. The paths can be either relative or
+# absolute; if relative, they are considered to be relative to the directory
+# the main master configuration file lives in (this file). Paths can make use
+# of shell-style globbing. If no files are matched by a path passed to this
+# option then the master will log a warning message.
+#
+#
+# Include a config file from some other path:
+#include: /etc/salt/extra_config
+#
+# Include config from several files and directories:
+#include:
+#  - /etc/salt/extra_config
+<% if master['include'] and master['include'].size > 0 -%>
+include:
+<% master['include'].each do |file| -%>
+  - <%= file %>
+<% end -%>
+<% end -%>
+
+#####        Security settings       #####
+##########################################
+# Enable "open mode", this mode still maintains encryption, but turns off
+# authentication, this is only intended for highly secure environments or for
+# the situation where your keys end up in a bad state. If you run in open mode
+# you do so at your own risk!
+#open_mode: False
+<% if master['open_mode'] -%>
+open_mode: <%= master['open_mode'] %>
+<% end -%>
+
+# Enable auto_accept, this setting will automatically accept all incoming
+# public keys from the minions. Note that this is insecure.
+<% if master['auto_accept'] -%>
+auto_accept: <%= master['auto_accept'] %>
+<% else -%>
+auto_accept: True
+<% end -%>
+
+# Time in minutes that a incoming public key with a matching name found in
+# pki_dir/minion_autosign/keyid is automatically accepted. Expired autosign keys
+# are removed when the master checks the minion_autosign directory.
+# 0 equals no timeout
+# autosign_timeout: 120
+
+# If the autosign_file is specified only incoming keys specified in
+# the autosign_file will be automatically accepted. This is insecure.
+# Regular expressions as well as globing lines are supported.
+#autosign_file: /etc/salt/autosign.conf
+<% if master['autosign_file'] -%>
+autosign_file: <%= master['autosign_file'] %>
+<% end -%>
+
+# Works like autosign_file, but instead allows you to specify minion IDs for
+# which keys will automatically be rejected. Will override both membership in
+# the autosign_file and the auto_accept setting.
+#autoreject_file: /etc/salt/autoreject.conf
+
+# Enable permissive access to the salt keys.  This allows you to run the
+# master or minion as root, but have a non-root group be given access to
+# your pki_dir.  To make the access explicit, root must belong to the group
+# you've given access to.  This is potentially quite insecure.
+# If an autosign_file is specified, enabling permissive_pki_access will allow group access
+# to that specific file.
+#permissive_pki_access: False
+<% if master['permissive_pki_access'] -%>
+permissive_pki_access: <%= master['permissive_pki_access'] %>
+<% end -%>
+
+# Allow users on the master access to execute specific commands on minions.
+# This setting should be treated with care since it opens up execution
+# capabilities to non root users. By default this capability is completely
+# disabled.
+#
+#client_acl:
+#  larry:
+#    - test.ping
+#    - network.*
+#
+<% if master['client_acl'] and master['client_acl'].size > 0 -%>
+client_acl:
+<% master['client_acl'].each_pair do |key,value| -%>
+  <%= key %>:
+  <% value.each do |setting| -%>
+    - <%= setting %>
+  <% end -%>
+<% end -%>
+<% end -%>
+
+# Blacklist any of the following users or modules
+#
+# This example would blacklist all non sudo users, including root from
+# running any commands. It would also blacklist any use of the "cmd"
+# module.
+# This is completely disabled by default.
+#
+#client_acl_blacklist:
+#  users:
+#    - root
+#    - '^(?!sudo_).*$'   #  all non sudo users
+#  modules:
+#    - cmd
+<% if master['client_acl_blacklist'] and master['client_acl_blacklist'].size > 0 -%>
+client_acl_blacklist:
+<% master['client_acl_blacklist'].each_pair do |key,value| -%>
+  <%= key %>:
+  <% value.each do |setting| -%>
+    - <%= setting %>
+  <% end -%>
+<% end -%>
+<% end -%>
+
+# The external auth system uses the Salt auth modules to authenticate and
+# validate users to access areas of the Salt system.
+#
+#external_auth:
+#  pam:
+#    fred:
+#      - test.*
+#
+
+external_auth:
+  pam:
+    salt:
+      - .*
+      - '@runner'
+
+halite:
+  level: 'info'
+  server: 'cherrypy'
+  host: '0.0.0.0'
+  port: '80'
+  cors: False
+  tls: False
+
+rest_cherrypy:
+  port: 8080
+  webhook_disable_auth: True
+  disable_ssl: True
+
+# Time (in seconds) for a newly generated token to live. Default: 12 hours
+#token_expire: 43200
+<% if master['token_expire'] -%>
+token_expire: <%= master['token_expire'] %>
+<% end -%>
+
+# Allow minions to push files to the master. This is disabled by default, for
+# security purposes.
+#file_recv: False
+<% if master['file_recv'] -%>
+file_recv: <%= master['file_recv'] %>
+<% end -%>
+
+# Set a hard-limit on the size of the files that can be pushed to the master.
+# It will be interpreted as megabytes.
+# Default: 100
+#file_recv_max_size: 100
+
+# Signature verification on messages published from the master.
+# This causes the master to cryptographically sign all messages published to its event
+# bus, and minions then verify that signature before acting on the message.
+#
+# This is False by default.
+#
+# Note that to facilitate interoperability with masters and minions that are different
+# versions, if sign_pub_messages is True but a message is received by a minion with
+# no signature, it will still be accepted, and a warning message will be logged.
+# Conversely, if sign_pub_messages is False, but a minion receives a signed
+# message it will be accepted, the signature will not be checked, and a warning message
+# will be logged. This behavior went away in Salt 2014.1.0 and these two situations
+# will cause minion to throw an exception and drop the message.
+#
+# sign_pub_messages: False
+
+#####    Master Module Management    #####
+##########################################
+# Manage how master side modules are loaded
+
+# Add any additional locations to look for master runners
+#runner_dirs: []
+<% if master['runner_dirs'] and master['runner_dirs'].size > 0 -%>
+runner_dirs:
+<% master['runner_dirs'].each do |file| -%>
+  - <%= file %>
+<% end -%>
+<% end -%>
+
+# Enable Cython for master side modules
+#cython_enable: False
+<% if master['cython_enable'] -%>
+cython_enable: <%= master['cython_enable'] %>
+<% end -%>
+
+#####      State System settings     #####
+##########################################
+# The state system uses a "top" file to tell the minions what environment to
+# use and what modules to use. The state_top file is defined relative to the
+# root of the base environment as defined in "File Server settings" below.
+#state_top: top.sls
+<% if master['state_top'] -%>
+state_top: <%= master['state_top'] %>
+<% end -%>
+
+# The master_tops option replaces the external_nodes option by creating
+# a plugable system for the generation of external top data. The external_nodes
+# option is deprecated by the master_tops option.
+# To gain the capabilities of the classic external_nodes system, use the
+# following configuration:
+# master_tops:
+#   ext_nodes: <Shell command which returns yaml>
+#
+#master_tops: {}
+<% if master['master_tops'] and master['master_tops'].size > 0 -%>
+master_tops:
+<% master['master_tops'].each_pair do |key,value| -%>
+  <%= key %>: <%= value %>
+<% end -%>
+<% end -%>
+
+# The external_nodes option allows Salt to gather data that would normally be
+# placed in a top file. The external_nodes option is the executable that will
+# return the ENC data. Remember that Salt will look for external nodes AND top
+# files and combine the results if both are enabled!
+#external_nodes: None
+<% if master['external_nodes'] -%>
+external_nodes: <%= master['external_nodes'] %>
+<% end -%>
+
+# The renderer to use on the minions to render the state data
+#renderer: yaml_jinja
+<% if master['yaml_jinja'] -%>
+renderer: <%= master['yaml_jinja'] %>
+<% end -%>
+
+# The Jinja renderer can strip extra carriage returns and whitespace
+# See http://jinja.pocoo.org/docs/api/#high-level-api
+#
+# If this is set to True the first newline after a Jinja block is removed
+# (block, not variable tag!). Defaults to False, corresponds to the Jinja
+# environment init variable "trim_blocks".
+# jinja_trim_blocks: False
+#
+# If this is set to True leading spaces and tabs are stripped from the start
+# of a line to a block. Defaults to False, corresponds to the Jinja
+# environment init variable "lstrip_blocks".
+# jinja_lstrip_blocks: False
+
+# The failhard option tells the minions to stop immediately after the first
+# failure detected in the state execution, defaults to False
+#failhard: False
+<% if master['failhard'] -%>
+failhard: <%= master['failhard'] %>
+<% else -%>
+failhard: False
+<% end -%>
+
+# The state_verbose and state_output settings can be used to change the way
+# state system data is printed to the display. By default all data is printed.
+# The state_verbose setting can be set to True or False, when set to False
+# all data that has a result of True and no changes will be suppressed.
+#state_verbose: True
+<% if master['state_verbose'] -%>
+state_verbose: <%= master['state_verbose'] %>
+<% else -%>
+state_verbose: True
+<% end -%>
+
+# The state_output setting changes if the output is the full multi line
+# output for each changed state if set to 'full', but if set to 'terse'
+# the output will be shortened to a single line.  If set to 'mixed', the output
+# will be terse unless a state failed, in which case that output will be full.
+<% if master['state_output'] -%>
+state_output: <%= master['state_output'] %>
+<% else -%>
+state_output: changes
+<% end -%>
+
+#####      File Server settings      #####
+##########################################
+# Salt runs a lightweight file server written in zeromq to deliver files to
+# minions. This file server is built into the master daemon and does not
+# require a dedicated port.
+
+# The file server works on environments passed to the master, each environment
+# can have multiple root directories, the subdirectories in the multiple file
+# roots cannot match, otherwise the downloaded files will not be able to be
+# reliably ensured. A base environment is required to house the top file.
+# Example:
+file_roots:
+  base:
+    - /srv/states/
+  dev:
+    - /srv/dev/states/
+  prod:
+    - /srv/prod/states/
+
+#file_roots:
+#  base:
+#    - /srv/salt
+
+# The hash_type is the hash to use when discovering the hash of a file on
+# the master server. The default is md5, but sha1, sha224, sha256, sha384
+# and sha512 are also supported.
+#hash_type: md5
+<% if master['hash_type'] -%>
+hash_type: <%= master['hash_type'] %>
+<% end -%>
+
+# The buffer size in the file server can be adjusted here:
+#file_buffer_size: 1048576
+<% if master['file_buffer_size'] -%>
+file_buffer_size: <%= master['file_buffer_size'] %>
+<% end -%>
+
+# A regular expression (or a list of expressions) that will be matched
+# against the file path before syncing the modules and states to the minions.
+# This includes files affected by the file.recurse state.
+# For example, if you manage your custom modules and states in subversion
+# and don't want all the '.svn' folders and content synced to your minions,
+# you could set this to '/\.svn($|/)'. By default nothing is ignored.
+#
+#file_ignore_regex:
+#  - '/\.svn($|/)'
+#  - '/\.git($|/)'
+<% if master['file_ignore_regex'] and master['file_ignore_regex'].size > 0 -%>
+file_ignore_regex:
+<% master['file_ignore_regex'].each do |file| -%>
+  - <%= file %>
+<% end -%>
+<% end -%>
+
+# A file glob (or list of file globs) that will be matched against the file
+# path before syncing the modules and states to the minions. This is similar
+# to file_ignore_regex above, but works on globs instead of regex. By default
+# nothing is ignored.
+#
+# file_ignore_glob:
+#  - '*.pyc'
+#  - '*/somefolder/*.bak'
+#  - '*.swp'
+<% if master['file_ignore_glob'] and master['file_ignore_glob'].size > 0 -%>
+file_ignore_glob:
+<% master['file_ignore_glob'].each do |file| -%>
+  - <%= file %>
+<% end -%>
+<% end -%>
+
+# File Server Backend
+# Salt supports a modular fileserver backend system, this system allows
+# the salt master to link directly to third party systems to gather and
+# manage the files available to minions. Multiple backends can be
+# configured and will be searched for the requested file in the order in which
+# they are defined here. The default setting only enables the standard backend
+# "roots" which uses the "file_roots" option.
+#
+fileserver_backend:
+  - roots
+  - git
+#
+# To use multiple backends list them in the order they are searched:
+#
+#fileserver_backend:
+#  - git
+#  - roots
+#
+# Uncomment the line below if you do not want the file_server to follow
+# symlinks when walking the filesystem tree. This is set to True
+# by default. Currently this only applies to the default roots
+# fileserver_backend.
+#
+#fileserver_followsymlinks: False
+<% if master['fileserver_followsymlinks'] -%>
+fileserver_followsymlinks: <%= master['fileserver_followsymlinks'] %>
+<% end -%>
+#
+# Uncomment the line below if you do not want symlinks to be
+# treated as the files they are pointinig to. By default this is set to
+# False. By uncommenting the line below, any detected symlink while listing
+# files on the Master will not be returned to the Minion.
+#
+#fileserver_ignoresymlinks: True
+<% if master['fileserver_ignoresymlinks'] -%>
+fileserver_ignoresymlinks: <%= master['fileserver_ignoresymlinks'] %>
+<% end -%>
+# By default, the Salt fileserver recurses fully into all defined environments
+# to attempt to find files. To limit this behavior so that the fileserver only
+# traverses directories with SLS files and special Salt directories like _modules,
+# enable the option below. This might be useful for installations where a file root
+# has a very large number of files and performance is impacted. Default is False.
+#
+# fileserver_limit_traversal: False
+#
+# The fileserver can fire events off every time the fileserver is updated,
+# these are disabled by default, but can be easily turned on by setting this
+# flag to True
+#fileserver_events: False
+#
+# Git fileserver backend configuration
+# When using the git fileserver backend at least one git remote needs to be
+# defined. The user running the salt master will need read access to the repo.
+#
+<% if master['gitfs_provider'] -%>
+gitfs_provider: <%= master['gitfs_provider'] %>
+<% else -%>
+gitfs_provider: GitPython
+<% end -%>
+
+<% if master['gitfs_remotes'] and master['gitfs_remotes'].size > 0 -%>
+gitfs_remotes:
+<% master['gitfs_remotes'].each do |gitfs| -%>
+  - <%= gitfs %>
+<% end -%>
+<% end -%>
+#gitfs_remotes:
+#  - git://github.com/saltstack/salt-states.git
+#  - file:///var/git/saltmaster
+#
+# The repos will be searched in order to find the file requested by a client
+# and the first repo to have the file will return it.
+# When using the git backend branches and tags are translated into salt
+# environments.
+# Note:  file:// repos will be treated as a remote, so refs you want used must
+# exist in that repo as *local* refs.
+#
+# The gitfs_root option gives the ability to serve files from a subdirectory
+# within the repository. The path is defined relative to the root of the
+# repository and defaults to the repository root.
+#gitfs_root: somefolder/otherfolder
+<% if master['gitfs_root'] -%>
+gitfs_root: <%= master['gitfs_root'] %>
+<% end -%>
+
+
+
+<% if master['gitfs_ssl_verify'] -%>
+gitfs_ssl_verify: <%= master['gitfs_ssl_verify'] %>
+<% else -%>
+gitfs_ssl_verify: False
+<% end -%>
+
+# The gitfs_root option gives the ability to serve files from a subdirectory
+# within the repository. The path is defined relative to the root of the
+# repository and defaults to the repository root.
+#gitfs_root: somefolder/otherfolder
+
+#####         Pillar settings        #####
+##########################################
+# Salt Pillars allow for the building of global data that can be made selectively
+# available to different minions based on minion grain filtering. The Salt
+# Pillar is laid out in the same fashion as the file server, with environments,
+# a top file and sls files. However, pillar data does not need to be in the
+# highstate format, and is generally just key/value pairs.
+
+pillar_roots:
+  base:
+    - /srv/pillar
+  dev:
+    - /srv/dev/pillar/
+  prod:
+    - /srv/prod/pillar/
+
+#ext_pillar:
+#  - hiera: /etc/hiera.yaml
+#  - cmd_yaml: cat /etc/salt/yaml
+<% if master['ext_pillar'] and master['ext_pillar'].size > 0 -%>
+ext_pillar:
+<% master['ext_pillar'].each do |ext_pillar| -%>
+  - <%= ext_pillar %>
+<% end -%>
+<% end -%>
+# The ext_pillar_first option allows for external pillar sources to populate
+# before file system pillar. This allows for targeting file system pillar from
+# ext_pillar.
+#ext_pillar_first: False
+
+# The pillar_gitfs_ssl_verify option specifies whether to ignore ssl certificate
+# errors when contacting the pillar gitfs backend. You might want to set this to
+# false if you're using a git backend that uses a self-signed certificate but
+# keep in mind that setting this flag to anything other than the default of True
+# is a security concern, you may want to try using the ssh transport.
+#pillar_gitfs_ssl_verify: True
+
+# The pillar_opts option adds the master configuration file data to a dict in
+# the pillar called "master". This is used to set simple configurations in the
+# master config file that can then be used on minions.
+#pillar_opts: True
+<% if master['pillar_opts'] -%>
+pillar_opts: <%= master['pillar_opts'] %>
+<% end -%>
+
+#####          Syndic settings       #####
+##########################################
+# The Salt syndic is used to pass commands through a master from a higher
+# master. Using the syndic is simple, if this is a master that will have
+# syndic servers(s) below it set the "order_masters" setting to True, if this
+# is a master that will be running a syndic daemon for passthrough the
+# "syndic_master" setting needs to be set to the location of the master server
+# to receive commands from.
+
+# Set the order_masters setting to True if this master will command lower
+# masters' syndic interfaces.
+#order_masters: False
+<% if master['order_masters'] -%>
+order_masters: <%= master['order_masters'] %>
+<% end -%>
+
+# If this master will be running a salt syndic daemon, syndic_master tells
+# this master where to receive commands from.
+#syndic_master: masterofmaster
+<% if master['syndic_master'] -%>
+syndic_master: <%= master['syndic_master'] %>
+<% end -%>
+
+# This is the 'ret_port' of the MasterOfMaster
+#syndic_master_port: 4506
+<% if master['syndic_master_port'] -%>
+syndic_master_port: <%= master['syndic_master_port'] %>
+<% end -%>
+
+# PID file of the syndic daemon
+#syndic_pidfile: /var/run/salt-syndic.pid
+<% if master['syndic_pidfile'] -%>
+syndic_pidfile: <%= master['syndic_pidfile'] %>
+<% end -%>
+
+# LOG file of the syndic daemon
+#syndic_log_file: syndic.log
+<% if master['syndic_log_file'] -%>
+syndic_log_file: <%= master['syndic_log_file'] %>
+<% end -%>
+
+#####      Peer Publish settings     #####
+##########################################
+# Salt minions can send commands to other minions, but only if the minion is
+# allowed to. By default "Peer Publication" is disabled, and when enabled it
+# is enabled for specific minions and specific commands. This allows secure
+# compartmentalization of commands based on individual minions.
+
+# The configuration uses regular expressions to match minions and then a list
+# of regular expressions to match functions. The following will allow the
+# minion authenticated as foo.example.com to execute functions from the test
+# and pkg modules.
+#
+#peer:
+#  foo.example.com:
+#    - test.*
+#    - pkg.*
+#
+# This will allow all minions to execute all commands:
+#
+<% if master['peer'] and master['peer'].size > 0 -%>
+peer:
+<% master['peer'].each_pair do |key,value| -%>
+  <%= key %>:
+  <% value.each do |peer_set| -%>
+    - <%= peer_set %>
+  <% end -%>
+<% end -%>
+<% else -%>
+peer:
+  .*:
+    - .*
+<% end -%>
+
+#
+# This is not recommended, since it would allow anyone who gets root on any
+# single minion to instantly have root on all of the minions!
+
+# Minions can also be allowed to execute runners from the salt master.
+# Since executing a runner from the minion could be considered a security risk,
+# it needs to be enabled. This setting functions just like the peer setting
+# except that it opens up runners instead of module functions.
+#
+# All peer runner support is turned off by default and must be enabled before
+# using. This will enable all peer runners for all minions:
+#
+#peer_run:
+#  .*:
+#    - .*
+#
+# To enable just the manage.up runner for the minion foo.example.com:
+#
+#peer_run:
+#  foo.example.com:
+#    - manage.up
+<% if master['peer_run'] and master['peer_run'].size > 0 -%>
+peer_run:
+<% master['peer_run'].each_pair do |key,value| -%>
+  <%= key %>:
+  <% value.each do |peer_set| -%>
+    - <%= peer_set %>
+  <% end -%>
+<% end -%>
+<% end -%>
+
+#####         Mine settings     #####
+##########################################
+# Restrict mine.get access from minions. By default any minion has a full access
+# to get all mine data from master cache. In acl definion below, only pcre matches
+# are allowed.
+#
+# mine_get:
+#   .*:
+#     - .*
+#
+# Example below enables minion foo.example.com to get  'network.interfaces' mine data only
+# , minions web* to get all network.* and disk.* mine data and all other minions won't get
+# any mine data.
+#
+# mine_get:
+#   foo.example.com:
+#     - network.interfaces
+#   web.*:
+#     - network.*
+#     - disk.*
+
+
+#####         Logging settings       #####
+##########################################
+# The location of the master log file
+# The master log can be sent to a regular file, local path name, or network
+# location. Remote logging works best when configured to use rsyslogd(8) (e.g.:
+# ``file:///dev/log``), with rsyslogd(8) configured for network logging. The URI
+# format is: <file|udp|tcp>://<host|socketpath>:<port-if-required>/<log-facility>
+#log_file: /var/log/salt/master
+#log_file: file:///dev/log
+#log_file: udp://loghost:10514
+#log_file: /var/log/salt/master
+<% if master['log_file'] -%>
+log_file: <%= master['log_file'] %>
+<% end -%>
+#key_logfile: /var/log/salt/key
+<% if master['key_logfile'] -%>
+key_logfile: <%= master['key_logfile'] %>
+<% end -%>
+
+# The level of messages to send to the console.
+# One of 'garbage', 'trace', 'debug', info', 'warning', 'error', 'critical'.
+#log_level: warning
+<% if master['log_level'] -%>
+log_level: <%= master['log_level'] %>
+<% end -%>
+
+# The level of messages to send to the log file.
+# One of 'garbage', 'trace', 'debug', info', 'warning', 'error', 'critical'.
+#log_level_logfile: warning
+<% if master['log_level_logfile'] -%>
+log_level_logfile: <%= master['log_level_logfile'] %>
+<% end -%>
+
+# The date and time format used in log messages. Allowed date/time formating
+# can be seen here: http://docs.python.org/library/time.html#time.strftime
+#log_datefmt: '%H:%M:%S'
+<% if master['log_datefmt'] -%>
+log_datefmt: <%= master['log_datefmt'] %>
+<% end -%>
+#log_datefmt_logfile: '%Y-%m-%d %H:%M:%S'
+<% if master['log_datefmt_logfile'] -%>
+log_datefmt_logfile: <%= master['log_datefmt_logfile'] %>
+<% end -%>
+
+# The format of the console logging messages. Allowed formatting options can
+# be seen here: http://docs.python.org/library/logging.html#logrecord-attributes
+#log_fmt_console: '[%(levelname)-8s] %(message)s'
+<% if master['log_fmt_console'] -%>
+log_fmt_console: <%= master['log_fmt_console'] %>
+<% end -%>
+#log_fmt_logfile: '%(asctime)s,%(msecs)03.0f [%(name)-17s][%(levelname)-8s] %(message)s'
+<% if master['log_fmt_logfile'] -%>
+log_fmt_logfile: <%= master['log_fmt_logfile'] %>
+<% end -%>
+
+# This can be used to control logging levels more specificically.  This
+# example sets the main salt library at the 'warning' level, but sets
+# 'salt.modules' to log at the 'debug' level:
+#   log_granular_levels:
+#     'salt': 'warning',
+#     'salt.modules': 'debug'
+#
+#log_granular_levels: {}
+<% if master['log_granular_levels'] and master['log_granular_levels'].size > 0 -%>
+log_granular_levels:
+<% master['log_granular_levels'].each_pair do |key,value| -%>
+  <%= key %>: <%= value %>
+<% end -%>
+<% end -%>
+
+#####         Node Groups           #####
+##########################################
+# Node groups allow for logical groupings of minion nodes.
+# A group consists of a group name and a compound target.
+#
+#nodegroups:
+#  group1: 'L@foo.domain.com,bar.domain.com,baz.domain.com and bl*.domain.com'
+#  group2: 'G@os:Debian and foo.domain.com'
+<% if master['nodegroups'] and master['nodegroups'].size > 0 -%>
+nodegroups:
+<% master['nodegroups'].each_pair do |key,value| -%>
+  <%= key %>: <%= value %>
+<% end -%>
+<% end -%>
+
+#####     Range Cluster settings     #####
+##########################################
+# The range server (and optional port) that serves your cluster information
+# https://github.com/grierj/range/wiki/Introduction-to-Range-with-YAML-files
+#
+#range_server: range:80
+<% if master['range_server'] -%>
+range_server: <%= master['range_server'] %>
+<% end -%>
+
+#####     Windows Software Repo settings #####
+##############################################
+# Location of the repo on the master
+#win_repo: '/srv/salt/win/repo'
+<% if master['win_repo'] -%>
+win_repo: <%= master['win_repo'] %>
+<% end -%>
+
+# Location of the master's repo cache file
+#win_repo_mastercachefile: '/srv/salt/win/repo/winrepo.p'
+<% if master['win_repo_mastercachefile'] -%>
+win_repo_mastercachefile: <%= master['win_repo_mastercachefile'] %>
+<% end -%>
+
+# List of git repositories to include with the local repo
+#win_gitrepos:
+#  - 'https://github.com/saltstack/salt-winrepo.git'
+<% if master['win_gitrepos'] and master['win_gitrepos'].size > 0 -%>
+win_gitrepos:
+<% master['win_gitrepos'].each do |gitfs| -%>
+  - <%= gitfs %>
+<% end -%>
+<% end -%>

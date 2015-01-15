@@ -1,0 +1,5 @@
+*.dpkg-dist
+.tmp
+*.sublime-workspace
+*.log
+.vagrant
