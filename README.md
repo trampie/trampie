@@ -29,7 +29,7 @@ vagrant plugin install vagrant-hostmanager
 Fork template repository
 
 ```
-git clone http://us-mv-gitlab.americas.nsn-net.net/devops/trampie-repo-template.git
+git clone https://github.com/elyast/trampie-repo-template.git
 cd trampie-repo-template
 git submodule init
 git submodule update
