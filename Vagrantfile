@@ -79,7 +79,7 @@ Vagrant.configure("2") do |config|
         salt.master_pub = "config/master.pub"
         salt.install_master = vnode.master?
         salt.install_type = "git"
-        salt.install_args = "v2014.7.0"
+        salt.install_args = "v2015.2.0rc2"
         salt.bootstrap_options = "-F -G"
         salt.verbose = false
       end
