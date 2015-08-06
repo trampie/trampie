@@ -190,9 +190,16 @@ def hosts(args, vcloud)
     ssh_config_chunk = vnode.generate_ssh_config
     external_ips[vnode.name] = vnode.convert_to_ip(ssh_config_chunk)
   end
-  multi_task(vcloud, "hosts", ".*") do |vnode|
-    vnode.update_host_file(nic_interfaces, external_ips)
+  vcloud.foreach(".*") do |vnode|
+    Rake::Task.define_task("hosts_#{vnode.name}") do |name|
+      vnode.update_host_file(nic_interfaces, external_ips)
+    end
+    Rake::Task["hosts_#{vnode.name}"].invoke
   end
+  ### Doesnt work in newest vagrant due to locking ###
+  #multi_task(vcloud, "hosts", ".*") do |vnode|
+  #  vnode.update_host_file(nic_interfaces, external_ips)
+  #end
 end
 
 # Copyright (c) 2014 Nokia Solutions and Networks Oy Licensed under the Apache License, Version 2.0 (the "License");
