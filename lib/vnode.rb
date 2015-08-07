@@ -167,6 +167,9 @@ class VNode
       status_line = splitted[index + 2]
       status_cut = status_line.split(@name)[1].strip.split("\s")
       @status.state = status_cut.slice(0, status_cut.size - 1).join(" ")
+      if @status.state == "active"
+        @status.state = "running"
+      end
     else
       @status.state = "unknown"
     end
@@ -179,7 +182,7 @@ class VNode
         local_path = "#{local_path}/" if local_path !~ /\/$/
         base_dir = File.join(@cwd, "..")
         local_path = File.join(base_dir, local_path)
-        result = execute_system("rsync --archive -z #{local_path} #{name}:#{remote_path}", out_log)
+        result = execute_system("rsync --archive -z #{local_path} #{name}:#{remote_path} --rsync-path=\"sudo rsync\" ", out_log)
         if !result
           print " [#{@name}] rsync failed for #{local_path} => #{remote_path}"
         end

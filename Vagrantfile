@@ -61,13 +61,16 @@ Vagrant.configure("2") do |config|
           override.ssh.private_key_path = "../credentials/#{vnode.ssh_keyfile}"
           prov.flavor = vnode.flavor
           prov.image = vnode.image
-          prov.api_key = vnode.api_key
-          prov.endpoint = vnode.endpoint
-          prov.tenant = vnode.tenant
+          prov.password = vnode.api_key
+          prov.openstack_auth_url = vnode.openstack_auth_url
+          prov.tenant_name = vnode.tenant
           prov.keypair_name = vnode.keypair_name
           prov.availability_zone = vnode.availability_zone
           prov.security_groups = vnode.security_groups
-          prov.disks = prov.disks
+          prov.networks = vnode.networks
+          prov.floating_ip_pool = vnode.floating_ip_pool
+          prov.sync_method = "none"
+          prov.rsync_includes = []
         end
       end
 
