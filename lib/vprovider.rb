@@ -27,6 +27,10 @@ class VProvider
     @attributes['provider'] == "aws"
   end
 
+  def is_openstack?
+    @attributes['provider'] == "openstack"
+  end
+
   def release_lock
     @sem.signal
   end

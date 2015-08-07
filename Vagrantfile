@@ -54,6 +54,21 @@ Vagrant.configure("2") do |config|
             region.security_groups = vnode.security_groups
           end
         end
+      elsif vnode.is_openstack?
+        node.vm.provider :openstack do |prov,override|
+          prov.username = vnode.username
+          override.ssh.username = vnode.ssh_username
+          override.ssh.private_key_path = "../credentials/#{vnode.ssh_keyfile}"
+          prov.flavor = vnode.flavor
+          prov.image = vnode.image
+          prov.api_key = vnode.api_key
+          prov.endpoint = vnode.endpoint
+          prov.tenant = vnode.tenant
+          prov.keypair_name = vnode.keypair_name
+          prov.availability_zone = vnode.availability_zone
+          prov.security_groups = vnode.security_groups
+          prov.disks = prov.disks
+        end
       end
 
 
