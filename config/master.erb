@@ -331,12 +331,20 @@ halite:
   level: 'info'
   server: 'cherrypy'
   host: '0.0.0.0'
-  port: '80'
+<% if master['ui.port'] -%>
+  port: <%= master['ui.port'] %>
+<% else -%>
+  port: 8081
+<% end -%>
   cors: False
   tls: False
 
 rest_cherrypy:
+<% if master['rest.port'] -%>
+  port: <%= master['rest.port'] %>
+<% else -%>
   port: 8080
+<% end -%>
   webhook_disable_auth: True
   disable_ssl: True
 
