@@ -97,10 +97,13 @@ Vagrant.configure("2") do |config|
         salt.master_pub = "config/master.pub"
         salt.install_master = vnode.master?
         salt.install_type = "git"
-        salt.install_args = "v2015.5.3"
-        salt.bootstrap_options = "-F -G"
+        salt.install_args = "v2015.8.0"
+        salt.bootstrap_options = "-P -F -c /tmp"
         salt.verbose = false
       end
+
+      node.vm.provision :shell, inline: "echo instance_creation_date: $(date +%s%N) > /etc/salt/grains"
+
     end
   end
 end

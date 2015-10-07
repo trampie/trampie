@@ -100,8 +100,13 @@ class VCloud
   end
 
   def replace_block_in_file(file, block_of_text)
-    file = Pathname.new(file)
-    old_file_content = file.read
+    old_file_content = ""
+    begin
+      file = Pathname.new(file)
+      old_file_content = file.read
+    rescue Errno::ENOENT => e
+    # do nothing
+    end
     new_file_content = replace_block_in_text(old_file_content, block_of_text)
     file.open('w') { |io| io.write(new_file_content) }
   end
