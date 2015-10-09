@@ -157,7 +157,7 @@ defaults:
   # grains to be applied for all minions
   grains:
     roles:
-      - java.openjdk
+      - java
 
 default-master:
   master:
